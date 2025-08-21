@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>帮助中心 - SPA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        light: '#F5F7FA',
+                        dark: '#1D2129',
+                        gray: {
+                            100: '#F2F3F5',
+                            200: '#E5E6EB',
+                            300: '#C9CDD4',
+                            400: '#86909C',
+                            500: '#4E5969'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            }
+            .transition-height {
+                transition: max-height 0.3s ease-out;
+            }
+            .page {
+                display: none;
+            }
+            .page.active {
+                display: block;
+                animation: fadeIn 0.3s ease-out;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        }
+    </style>
+</head>
+<body class="bg-light text-dark font-sans min-h-screen">
+    <!-- 顶部导航栏 -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fa fa-comments-o text-primary text-2xl mr-2"></i>
+                <h1 class="text-lg font-semibold text-primary">帮助中心</h1>
+            </div>
+            <button id="userBtn" class="flex items-center text-gray-500 hover:text-primary transition-colors">
+                <i class="fa fa-user-o text-xl mr-1"></i>
+                <span class="text-sm hidden sm:inline" id="userStatus">游客</span>
+            </button>
+        </div>
+        
+        <!-- 搜索框 -->
+        <div class="px-4 pb-3">
+            <div class="relative">
+                <input type="text" placeholder="搜索问题或关键词..." id="searchInput"
+                    class="w-full py-2 pl-10 pr-4 rounded-full bg-gray-100 focus:bg-white border border-gray-200 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all text-sm">
+                <i class="fa fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- SPA 主内容区 -->
+    <main class="container mx-auto px-4 pb-20">
+        <!-- 首页 -->
+        <div id="homePage" class="page active">
+            <!-- 快捷入口 -->
+            <div class="grid grid-cols-4 gap-3 my-4">
+                <div class="flex flex-col items-center justify-center p-3 bg-white rounded-lg shadow-sm">
+                    <i class="fa fa-question-circle text-primary text-xl mb-1"></i>
+                    <span class="text-xs">常见问题</span>
+                </div>
+                <div class="flex flex-col items-center justify-center p-3 bg-white rounded-lg shadow-sm">
+                    <i class="fa fa-lightbulb-o text-secondary text-xl mb-1"></i>
+                    <span class="text-xs">使用技巧</span>
+                </div>
+                <div class="flex flex-col items-center justify-center p-3 bg-white rounded-lg shadow-sm">
+                    <i class="fa fa-file-text-o text-primary text-xl mb-1"></i>
+                    <span class="text-xs">用户协议</span>
+                </div>
+                <div class="flex flex-col items-center justify-center p-3 bg-white rounded-lg shadow-sm">
+                    <i class="fa fa-headphones text-secondary text-xl mb-1"></i>
+                    <span class="text-xs">联系我们</span>
+                </div>
+            </div>
+            
+            <!-- 广告预留位 -->
+            <div class="my-4 bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+                <div class="p-2 bg-gray-100 text-xs text-gray-400 flex justify-between items-center">
+                    <span>广告</span>
+                    <button class="text-gray-400 hover:text-gray-500"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="p-4 flex items-center">
+                    <div class="w-16 h-16 bg-gray-100 rounded mr-3 flex-shrink-0">
+                        <!-- 广告图片占位 -->
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-sm font-medium mb-1">广告标题</h3>
+                        <p class="text-xs text-gray-400 line-clamp-2">这里是广告内容描述，预留位置用于展示推广信息。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 快速导航到Q&A -->
+            <button id="goToQA" class="w-full py-3 bg-primary/10 text-primary rounded-lg shadow-sm flex items-center justify-center my-4">
+                <i class="fa fa-comments mr-2"></i>
+                <span>查看问答中心</span>
+            </button>
+            
+            <!-- 联系我们 -->
+            <div class="my-5">
+                <button id="contactBtn" class="w-full py-3 bg-primary text-white rounded-lg shadow-sm flex items-center justify-center">
+                    <i class="fa fa-paper-plane mr-2"></i>
+                    <span>联系客服</span>
+                </button>
+                <p class="text-center text-xs text-gray-400 mt-2">工作时间: 9:00-18:00 (节假日除外)</p>
+            </div>
+        </div>
+        
+        <!-- Q&A页面 -->
+        <div id="qaPage" class="page">
+            <div class="flex justify-between items-center mb-4">
+                <button id="backToHome" class="text-gray-500 hover:text-primary">
+                    <i class="fa fa-arrow-left"></i>
+                    <span class="text-sm ml-1">返回</span>
+                </button>
+                <h2 class="text-base font-semibold">问答中心</h2>
+                <div class="w-8"></div> <!-- 占位，保持居中 -->
+            </div>
+            
+            <!-- 问题分类 -->
+            <div class="my-5">
+                <h3 class="text-base font-semibold mb-3">问题分类</h3>
+                
+                <!-- 分类1 -->
+                <div class="mb-3 bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="category-header p-4 flex justify-between items-center cursor-pointer">
+                        <div class="flex items-center">
+                            <i class="fa fa-cog text-primary mr-2"></i>
+                            <span class="font-medium">账号相关</span>
+                        </div>
+                        <i class="fa fa-chevron-down text-gray-300 transition-transform duration-300"></i>
+                    </div>
+                    <div class="category-content border-t border-gray-100">
+                        <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item" data-id="1">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">如何修改个人信息？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                        <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item" data-id="2">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">忘记密码怎么办？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                        <div class="p-4 hover:bg-gray-50 transition-colors qa-item" data-id="3">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">如何绑定手机号？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 分类2 -->
+                <div class="mb-3 bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="category-header p-4 flex justify-between items-center cursor-pointer">
+                        <div class="flex items-center">
+                            <i class="fa fa-shopping-cart text-primary mr-2"></i>
+                            <span class="font-medium">购买相关</span>
+                        </div>
+                        <i class="fa fa-chevron-down text-gray-300 transition-transform duration-300"></i>
+                    </div>
+                    <div class="category-content border-t border-gray-100 hidden">
+                        <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item" data-id="4">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">如何完成支付？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                        <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item" data-id="5">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">支持哪些支付方式？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                        <div class="p-4 hover:bg-gray-50 transition-colors qa-item" data-id="6">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">如何申请退款？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 分类3 -->
+                <div class="mb-3 bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="category-header p-4 flex justify-between items-center cursor-pointer">
+                        <div class="flex items-center">
+                            <i class="fa fa-mobile text-primary mr-2 text-lg"></i>
+                            <span class="font-medium">功能使用</span>
+                        </div>
+                        <i class="fa fa-chevron-down text-gray-300 transition-transform duration-300"></i>
+                    </div>
+                    <div class="category-content border-t border-gray-100 hidden">
+                        <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item" data-id="7">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">如何开启通知提醒？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                        <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item" data-id="8">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">如何分享内容给好友？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                        <div class="p-4 hover:bg-gray-50 transition-colors qa-item" data-id="9">
+                            <div class="flex justify-between items-center">
+                                <p class="text-sm">如何设置隐私权限？</p>
+                                <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 热门问题 -->
+            <div class="my-5">
+                <h3 class="text-base font-semibold mb-3">热门问题</h3>
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="p-4 border-b border-gray-100 hover:bg-gray-50-gray-50 transition-colors qa-item" data-id="10">
+                        <div class="flex justify-between items-center">
+                            <p class="text-sm">应用闪退怎么办？</p>
+                            <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                        </div>
+                    </div>
+                    <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item" data-id="11">
+                        <div class="flex justify-between items-center">
+                            <p class="text-sm">如何更新到最新版本？</p>
+                            <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                        </div>
+                    </div>
+                    <div class="p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item" data-id="12">
+                        <div class="flex justify-between items-center">
+                            <p class="text-sm">为什么收不到验证码？</p>
+                            <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                        </div>
+                    </div>
+                    <div class="p-4 hover:bg-gray-50 transition-colors qa-item" data-id="13">
+                        <div class="flex justify-between items-center">
+                            <p class="text-sm">如何清除缓存释放空间？</p>
+                            <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i><span class="view-count">0</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 问答详情页 -->
+        <div id="answerPage" class="page">
+            <div class="flex justify-between items-center mb-4">
+                <button id="backToQA" class="text-gray-500 hover:text-primary">
+                    <i class="fa fa-arrow-left"></i>
+                    <span class="text-sm ml-1">返回</span>
+                </button>
+                <h2 class="text-base font-semibold">问题详情</h2>
+                <div class="w-8"></div> <!-- 占位，保持居中 -->
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <h3 class="text-base font-medium mb-2" id="questionTitle">问题标题</h3>
+                <div class="text-sm text-gray-500 mb-3">
+                    <span class="flex items-center"><i class="fa fa-eye mr-1 text-gray-400"></i> 浏览 <span id="questionViewCount">0</span></span>
+                </div>
+                <div class="border-t border-gray-100 pt-3" id="answerContent">
+                    <!-- 答案内容将通过JS动态填充 -->
+                </div>
+            </div>
+            
+            <!-- 相关问题 -->
+            <div class="my-4">
+                <h3 class="text-sm font-semibold mb-2">相关问题</h3>
+                <div class="bg-white rounded-lg shadow-sm" id="relatedQuestions">
+                    <!-- 相关问题将通过JS动态填充 -->
+                </div>
+            </div>
+            
+            <!-- 提问区域 -->
+            <div class="my-6">
+                <button id="askQuestionBtn" class="w-full py-2 border border-primary text-primary rounded-lg flex items-center justify-center">
+                    <i class="fa fa-question-circle mr-2"></i>
+                    <span>我有其他问题</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 管理员页面 -->
+        <div id="adminPage" class="page">
+            <div class="flex justify-between items-center mb-4">
+                <button id="adminLogout" class="text-gray-500 hover:text-primary">
+                    <i class="fa fa-sign-out"></i>
+                    <span class="text-sm ml-1">退出</span>
+                </button>
+                <h2 class="text-base font-semibold">管理员中心</h2>
+                <div class="w-8"></div> <!-- 占位，保持居中 -->
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <h3 class="text-base font-medium mb-3">访问统计</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gray-50 p-3 rounded">
+                        <p class="text-xs text-gray-400">总访问量</p>
+                        <p class="text-xl font-semibold" id="totalVisits">0</p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded">
+                        <p class="text-xs text-gray-400">今日访问</p>
+                        <p class="text-xl font-semibold" id="todayVisits">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <h3 class="text-base font-medium mb-3">热门问题统计</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left pb-2 text-gray-500">ID</th>
+                                <th class="text-left pb-2 text-gray-500">问题</th>
+                                <th class="text-left pb-2 text-gray-500">浏览量</th>
+                            </tr>
+                        </thead>
+                        <tbody id="popularQuestions">
+                            <!-- 热门问题将通过JS动态填充 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <h3 class="text-base font-medium mb-3">最近访问记录</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="text-left pb-2 text-gray-500">ID</th>
+                                <th class="text-left pb-2 text-gray-500">IP地址</th>
+                                <th class="text-left pb-2 text-gray-500">时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitorList">
+                            <!-- 访问记录将通过JS动态填充 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- 底部导航 -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 px-4">
+        <div class="flex justify-around">
+             <a href="#" id="navHome" class="flex flex-col items-center text-primary">
+                <i class="fa fa-home text-lg"></i>
+                <span class="text-xs mt-1">主页</span>
+            </a>
+            <a href="#" id="navQA" class="flex flex-col items-center text-gray-400">
+                <i class="fa fa-question-circle text-lg"></i>
+                <span class="text-xs mt-1">问答</span>
+            </a>
+            <a href="#" id="navAdmin" class="flex flex-col items-center text-gray-400">
+                <i class="fa fa-cog text-lg"></i>
+                <span class="text-xs mt-1">管理</span>
+            </a>
+        </div>
+    </footer>
+    
+    <!-- 弹窗系统 -->
+    <!-- 登录弹窗 -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg w-full max-w-xs mx-4 shadow-lg transform transition-all">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-medium">用户登录</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-500">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="mb-3 text-xs text-gray-500">
+                    登录即表示您同意我们收集您的IP地址和浏览器信息用于提供更好的服务
+                </div>
+                <button id="guestLoginBtn" class="w-full py-2 border border-gray-200 rounded-lg mb-3 flex items-center justify-center">
+                    <i class="fa fa-user-o mr-2 text-gray-500"></i>
+                    <span>游客登录</span>
+                </button>
+                <button id="switchToAdminBtn" class="w-full py-2 bg-primary text-white rounded-lg flex items-center justify-center">
+                    <i class="fa fa-lock mr-2"></i>
+                    <span>管理员登录</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 管理员登录弹窗 -->
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg w-full max-w-xs mx-4 shadow-lg transform transition-all">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-medium">管理员登录</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-500">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="mb-3">
+                    <label class="block text-xs text-gray-500 mb-1">用户名</label>
+                    <input type="text" id="adminUsername" value="admin" readonly 
+                        class="w-full py-2 px-3 border border-gray-200 rounded-lg text-sm bg-gray-100">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-xs text-gray-500 mb-1">密码</label>
+                    <input type="password" id="adminPassword" placeholder="请输入管理员密码" 
+                        class="w-full py-2 px-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary">
+                </div>
+                <button id="doAdminLoginBtn" class="w-full py-2 bg-primary text-white rounded-lg">
+                    登录
+                </button>
+                <button id="switchToUserBtn" class="w-full py-2 mt-2 text-gray-500 text-sm">
+                    返回用户登录
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通用提示弹窗 -->
+    <div id="toastModal" class="fixed inset-0 bg-black/30 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-lg px-4 py-3 max-w-xs text-center transform transition-transform">
+            <p id="toastMessage" class="text-sm"></p>
+        </div>
+    </div>
+
+    <script>
+        // 全局存储问答数据
+        let qaItems = [];
+        
+        // 页面导航控制
+        const PageManager = {
+            pages: {
+                home: document.getElementById('homePage'),
+                qa: document.getElementById('qaPage'),
+                answer: document.getElementById('answerPage'),
+                admin: document.getElementById('adminPage')
+            },
+            
+            navigateTo: function(pageId) {
+                // 隐藏所有页面
+                Object.values(this.pages).forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // 显示目标页面
+                if (this.pages[pageId]) {
+                    this.pages[pageId].classList.add('active');
+                    
+                    // 更新导航栏状态
+                    this.updateNavStatus(pageId);
+                }
+            },
+            
+            updateNavStatus: function(activePageId) {
+                // 重置所有导航项
+                document.querySelectorAll('footer a').forEach(link => {
+                    link.classList.remove('text-primary');
+                    link.classList.add('text-gray-400');
+                });
+                
+                // 激活当前页面导航项
+                if (activePageId === 'home') {
+                    document.getElementById('navHome').classList.remove('text-gray-400');
+                    document.getElementById('navHome').classList.add('text-primary');
+                } else if (activePageId === 'qa' || activePageId === 'answer') {
+                    document.getElementById('navQA').classList.remove('text-gray-400');
+                    document.getElementById('navQA').classList.add('text-primary');
+                } else if (activePageId === 'admin') {
+                    document.getElementById('navAdmin').classList.remove('text-gray-400');
+                    document.getElementById('navAdmin').classList.add('text-primary');
+                }
+            }
+        };
+        
+        // 弹窗系统
+        const modalSystem = {
+            modals: {
+                login: document.getElementById('loginModal'),
+                adminLogin: document.getElementById('adminLoginModal'),
+                toast: document.getElementById('toastModal')
+            },
+            
+            open: function(modalId) {
+                if (this.modals[modalId]) {
+                    this.modals[modalId].classList.remove('hidden');
+                    // 添加动画效果
+                    setTimeout(() => {
+                        const modalContent = this.modals[modalId].querySelector('div[class*="rounded-lg"]');
+                        if (modalContent) {
+                            modalContent.classList.add('scale-100');
+                            modalContent.classList.remove('scale-95');
+                        }
+                    }, 10);
+                }
+            },
+            
+            close: function(modalId) {
+                if (this.modals[modalId]) {
+                    // 添加关闭动画
+                    const modalContent = this.modals[modalId].querySelector('div[class*="rounded-lg"]');
+                    if (modalContent) {
+                        modalContent.classList.add('scale-95');
+                        modalContent.classList.remove('scale-100');
+                    }
+                    
+                    setTimeout(() => {
+                        this.modals[modalId].classList.add('hidden');
+                    }, 200);
+                }
+            },
+            
+            showToast: function(message, duration = 2000) {
+                const toast = this.modals.toast;
+                const messageEl = document.getElementById('toastMessage');
+                
+                messageEl.textContent = message;
+                toast.classList.remove('opacity-0', 'pointer-events-none');
+                
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'pointer-events-none');
+                }, duration);
+            }
+        };
+        
+        // 初始化弹窗样式
+        Object.values(modalSystem.modals).forEach(modal => {
+            if (modal && modal.id !== 'toastModal') {
+                const modalContent = modal.querySelector('div[class*="rounded-lg"]');
+                modalContent.classList.add('scale-95', 'transition-transform', 'duration-200');
+            }
+        });
+        
+        // 设备信息收集工具
+        const DeviceInfo = {
+            // 获取浏览器指纹信息
+            getFingerprint: function() {
+                return {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    screenResolution: `${screen.width}x${screen.height}`,
+                    colorDepth: screen.colorDepth,
+                    timezoneOffset: new Date().getTimezoneOffset(),
+                    hasTouch: 'ontouchstart' in window,
+                    cookiesEnabled: navigator.cookieEnabled,
+                    hardwareConcurrency: navigator.hardwareConcurrency || 'unknown'
+                };
+            },
+            
+            // 获取IP地址
+            getIPAddress: async function() {
+                try {
+                    const response = await fetch('api/get_ip.php');
+                    const data = await response.json();
+                    
+                    if (!data.success) {
+                        throw new Error(data.message || '获取IP地址失败');
+                    }
+                    
+                    return data.ip || 'unknown';
+                } catch (error) {
+                    console.error('获取IP地址失败:', error);
+                    return 'unknown';
+                }
+            }
+        };
+        
+        // 加载问答数据
+        async function loadQAData() {
+            try {
+                const response = await fetch('api/get_qa.php');
+                const result = await response.json();
+                
+                if (result.success) {
+                    qaItems = result.data;
+                    updateViewCounts();
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('加载问答数据失败:', error);
+                return false;
+            }
+        }
+        
+        // 更新所有问题的浏览次数显示
+        function updateViewCounts() {
+            qaItems.forEach(item => {
+                const elements = document.querySelectorAll(`.qa-item[data-id="${item.id}"] .view-count`);
+                elements.forEach(el => {
+                    el.textContent = item.view_count;
+                });
+            });
+        }
+        
+        // 更新问题浏览次数
+        async function updateViewCount(questionId) {
+            try {
+                const response = await fetch('api/update_view_count.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question_id: questionId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 更新本地数据
+                    const index = qaItems.findIndex(item => item.id == questionId);
+                    if (index !== -1) {
+                        qaItems[index].view_count = result.new_count;
+                        updateViewCounts();
+                    }
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('更新浏览次数失败:', error);
+                return false;
+            }
+        }
+        
+        // 显示问题答案
+        async function showAnswer(questionId) {
+            // 查找问题
+            const question = qaItems.find(item => item.id == questionId);
+            if (!question) {
+                modalSystem.showToast('未找到该问题');
+                return;
+            }
+            
+            // 更新浏览次数
+            await updateViewCount(questionId);
+            
+            // 更新页面内容
+            document.getElementById('questionTitle').textContent = question.question;
+            document.getElementById('questionViewCount').textContent = question.view_count + 1;
+            document.getElementById('answerContent').innerHTML = `<p class="text-sm">${question.answer}</p>`;
+            
+            // 生成相关问题
+            generateRelatedQuestions(question.category_id, questionId);
+            
+            // 导航到答案页面
+            PageManager.navigateTo('answer');
+        }
+        
+        // 生成相关问题
+        function generateRelatedQuestions(categoryId, currentQuestionId) {
+            const relatedContainer = document.getElementById('relatedQuestions');
+            relatedContainer.innerHTML = '';
+            
+            // 找到同分类的其他问题
+            const relatedQuestions = qaItems
+                .filter(item => item.category_id == categoryId && item.id != currentQuestionId)
+                .slice(0, 2);
+            
+            if (relatedQuestions.length === 0) {
+                relatedContainer.innerHTML = '<div class="p-3 text-sm text-gray-500">暂无相关问题</div>';
+                return;
+            }
+            
+            relatedQuestions.forEach(question => {
+                const item = document.createElement('div');
+                item.className = 'p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors qa-item last:border-0 text-sm';
+                item.setAttribute('data-id', question.id);
+                
+                item.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <p>${question.question}</p>
+                        <span class="text-xs text-gray-400"><i class="fa fa-eye mr-1"></i>${question.view_count}</span>
+                    </div>
+                `;
+                
+                item.addEventListener('click', () => {
+                    showAnswer(question.id);
+                });
+                
+                relatedContainer.appendChild(item);
+            });
+        }
+        
+        // 游客登录处理
+        async function handleGuestLogin() {
+            try {
+                // 显示加载提示
+                modalSystem.showToast('正在登录中...');
+                
+                // 获取设备信息
+                const fingerprint = DeviceInfo.getFingerprint();
+                const ipAddress = await DeviceInfo.getIPAddress();
+                
+                // 准备要发送的数据
+                const visitorData = {
+                    ip_address: ipAddress,
+                    browser_fingerprint: JSON.stringify(fingerprint),
+                    login_time: new Date().toISOString()
+                };
+                
+                // 发送数据到后端存储
+                const response = await fetch('api/save_visitor.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(visitorData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 关闭登录弹窗并显示成功消息
+                    modalSystem.close('login');
+                    modalSystem.showToast(`已以游客身份登录`);
+                    
+                    // 更新用户状态
+                    document.getElementById('userStatus').textContent = '游客';
+                    
+                    // 存储当前访客ID到本地
+                    localStorage.setItem('currentVisitorId', result.visitor_id);
+                } else {
+                    modalSystem.showToast('登录失败: ' + (result.message || '未知错误'));
+                }
+            } catch (error) {
+                console.error('游客登录失败:', error);
+                modalSystem.showToast('登录失败，请重试');
+            }
+        }
+        
+        // 管理员登录处理
+        async function handleAdminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            
+            if (!password) {
+                modalSystem.showToast('请输入密码');
+                return;
+            }
+            
+            try {
+                modalSystem.showToast('登录中...');
+                
+                // 发送登录请求到后端
+                const response = await fetch('api/admin_login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    modalSystem.close('adminLogin');
+                    modalSystem.showToast('管理员登录成功');
+                    
+                    // 更新用户状态
+                    document.getElementById('userStatus').textContent = '管理员';
+                    
+                    // 存储管理员登录状态
+                    localStorage.setItem('isAdminLoggedIn', 'true');
+                    
+                    // 导航到管理员页面
+                    loadAdminData();
+                    PageManager.navigateTo('admin');
+                } else {
+                    modalSystem.showToast('登录失败: ' + (result.message || '密码错误'));
+                }
+            } catch (error) {
+                console.error('管理员登录失败:', error);
+                modalSystem.showToast('登录失败，请重试');
+            }
+        }
+        
+        // 加载管理员数据
+        async function loadAdminData() {
+            try {
+                // 加载访客数据
+                const visitorResponse = await fetch('api/get_visitors.php');
+                const visitorResult = await visitorResponse.json();
+                
+                if (visitorResult.success) {
+                    // 更新统计数据
+                    document.getElementById('totalVisits').textContent = visitorResult.total;
+                    
+                    // 计算今日访问量
+                    const today = new Date().toISOString().split('T')[0];
+                    const todayVisits = visitorResult.visitors.filter(v => v.login_time.startsWith(today)).length;
+                    document.getElementById('todayVisits').textContent = todayVisits;
+                    
+                    // 更新访客列表
+                    const visitorList = document.getElementById('visitorList');
+                    visitorList.innerHTML = '';
+                    
+                    // 显示最近10条记录
+                    const recentVisitors = visitorResult.visitors.slice(-10).reverse();
+                    
+                    recentVisitors.forEach(visitor => {
+                        const row = document.createElement('tr');
+                        row.className = 'border-b border-gray-100 last:border-0';
+                        
+                        const date = new Date(visitor.login_time);
+                        const formattedDate = date.toLocaleString();
+                        
+                        row.innerHTML = `
+                            <td class="py-2">${visitor.id}</td>
+                            <td class="py-2">${visitor.ip_address}</td>
+                            <td class="py-2 text-sm">${formattedDate}</td>
+                        `;
+                        
+                        visitorList.appendChild(row);
+                    });
+                }
+                
+                // 加载热门问题
+                const popularQuestions = [...qaItems]
+                    .sort((a, b) => b.view_count - a.view_count)
+                    .slice(0, 5);
+                
+                const popularContainer = document.getElementById('popularQuestions');
+                popularContainer.innerHTML = '';
+                
+                popularQuestions.forEach(question => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-gray-100 last:border-0';
+                    
+                    row.innerHTML = `
+                        <td class="py-2">${question.id}</td>
+                        <td class="py-2">${question.question}</td>
+                        <td class="py-2">${question.view_count}</td>
+                    `;
+                    
+                    popularContainer.appendChild(row);
+                });
+                
+            } catch (error) {
+                console.error('加载管理员数据失败:', error);
+            }
+        }
+        
+        // 事件监听
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化加载问答数据
+            loadQAData();
+            
+            // 页面导航事件
+            document.getElementById('goToQA').addEventListener('click', () => {
+                PageManager.navigateTo('qa');
+            });
+            
+            document.getElementById('backToHome').addEventListener('click', () => {
+                PageManager.navigateTo('home');
+            });
+            
+            document.getElementById('backToQA').addEventListener('click', () => {
+                PageManager.navigateTo('qa');
+            });
+            
+            document.getElementById('navHome').addEventListener('click', (e) => {
+                e.preventDefault();
+                PageManager.navigateTo('home');
+            });
+            
+            document.getElementById('navQA').addEventListener('click', (e) => {
+                e.preventDefault();
+                PageManager.navigateTo('qa');
+            });
+            
+            document.getElementById('navAdmin').addEventListener('click', (e) => {
+                e.preventDefault();
+                // 检查是否已登录
+                if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+                    loadAdminData();
+                    PageManager.navigateTo('admin');
+                } else {
+                    modalSystem.open('adminLogin');
+                }
+            });
+            
+            // 用户登录相关
+            document.getElementById('userBtn').addEventListener('click', () => {
+                // 检查是否已登录
+                if (localStorage.getItem('currentVisitorId') || localStorage.getItem('isAdminLoggedIn')) {
+                    modalSystem.showToast('您已登录');
+                    return;
+                }
+                modalSystem.open('login');
+            });
+            
+            // 游客登录
+            document.getElementById('guestLoginBtn').addEventListener('click', handleGuestLogin);
+            
+            // 管理员登录切换
+            document.getElementById('switchToAdminBtn').addEventListener('click', () => {
+                modalSystem.close('login');
+                modalSystem.open('adminLogin');
+            });
+            
+            document.getElementById('switchToUserBtn').addEventListener('click', () => {
+                modalSystem.close('adminLogin');
+                modalSystem.open('login');
+            });
+            
+            document.getElementById('doAdminLoginBtn').addEventListener('click', handleAdminLogin);
+            
+            // 管理员登出
+            document.getElementById('adminLogout').addEventListener('click', () => {
+                localStorage.removeItem('isAdminLoggedIn');
+                document.getElementById('userStatus').textContent = '游客';
+                modalSystem.showToast('已退出登录');
+                PageManager.navigateTo('home');
+            });
+            
+            // 关闭弹窗按钮
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('[id$="Modal"]');
+                    if (modal) {
+                        const modalId = modal.id.replace('Modal', '');
+                        modalSystem.close(modalId);
+                    }
+                });
+            });
+            
+            // 点击弹窗外部关闭
+            Object.values(modalSystem.modals).forEach(modal => {
+                if (modal) {
+                    modal.addEventListener('click', function(e) {
+                        if (e.target === this) {
+                            const modalId = this.id.replace('Modal', '');
+                            modalSystem.close(modalId);
+                        }
+                    });
+                }
+            });
+            
+            // 分类展开/折叠功能
+            document.querySelectorAll('.category-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.fa-chevron-down');
+                    
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+            
+            // Q&A 问题点击事件
+            document.querySelectorAll('.qa-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const questionId = this.getAttribute('data-id');
+                    if (questionId) {
+                        showAnswer(questionId);
+                    }
+                });
+            });
+            
+            // 搜索功能
+            document.getElementById('searchInput').addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    const searchTerm = this.value.trim().toLowerCase();
+                    if (searchTerm && qaItems.length > 0) {
+                        // 搜索问题
+                        const matchedQuestion = qaItems.find(q => 
+                            q.question.toLowerCase().includes(searchTerm)
+                        );
+                        
+                        if (matchedQuestion) {
+                            showAnswer(matchedQuestion.id);
+                        } else {
+                            modalSystem.showToast('未找到相关问题');
+                        }
+                    }
+                }
+            });
+            
+            // 检查登录状态
+            if (localStorage.getItem('currentVisitorId')) {
+                document.getElementById('userStatus').textContent = '游客';
+            }
+            
+            if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+                document.getElementById('userStatus').textContent = '管理员';
+            }
+        });
+    </script>
+</body>
+</html>
