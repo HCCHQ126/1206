@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MC生存圈公会实力天梯排行榜</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* 保留之前简化的CSS样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c1220, #1a2436);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo i {
+            font-size: 2.8rem;
+            color: #f8fafc;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            padding: 15px;
+            border-radius: 50%;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #93c5fd, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border-radius: 30px;
+            border: none;
+            background: rgba(31, 83, 167, 0.7);
+            color: #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            background: rgba(30, 41, 59, 0.9);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        
+        .tier-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .tier-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .tier-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tier-header {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tier-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            opacity: 0.15;
+        }
+        
+        .tier-badge {
+            background: white;
+            color: #0f172a;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            z-index: 2;
+        }
+        
+        .tier-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .tier-count {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 2;
+        }
+        
+        .tier-content {
+            padding: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+        
+        .alliance-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .alliance-card:hover {
+            background: rgba(56, 70, 100, 0.7);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .alliance-name {
+            font-weight: 500;
+            font-size: 1.05rem;
+            word-break: break-word;
+        }
+        
+        /* 等级颜色映射 - 保留在HTML中，不放在JSON里 */
+        .tier-45 .tier-header::before { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        .tier-45 .tier-header { background: linear-gradient(90deg, #d97706, #b45309); }
+        
+        .tier-05 .tier-header::before { background: linear-gradient(90deg, #e5e7eb, #d1d5db); }
+        .tier-05 .tier-header { background: linear-gradient(90deg, #6b7280, #4b5563); }
+        
+        .tier-1 .tier-header::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .tier-1 .tier-header { background: linear-gradient(90deg, #b91c1c, #991b1b); }
+        
+        .tier-2 .tier-header::before { background: linear-gradient(90deg, #f97316, #ea580c); }
+        .tier-2 .tier-header { background: linear-gradient(90deg, #c2410c, #9a3412); }
+        
+        .tier-25 .tier-header::before { background: linear-gradient(90deg, #eab308, #ca8a04); }
+        .tier-25 .tier-header { background: linear-gradient(90deg, #a16207, #854d0e); }
+        
+        .tier-3 .tier-header::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .tier-3 .tier-header { background: linear-gradient(90deg, #15803d, #166534); }
+        
+        .tier-35 .tier-header::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+        .tier-35 .tier-header { background: linear-gradient(90deg, #0e7490, #155e75); }
+        
+        .tier-4 .tier-header::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .tier-4 .tier-header { background: linear-gradient(90deg, #1d4ed8, #1e40af); }
+        
+        .tier-5 .tier-header::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+        .tier-5 .tier-header { background: linear-gradient(90deg, #6d28d9, #5b21b6); }
+        
+        /* 联盟位样式 */
+        .alliance-position {
+            background: linear-gradient(135deg, #1e3a5f, #2c5282);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(178, 24, 24, 0.3);
+            border: 2px solid rgba(8, 113, 199, 0.3);
+        }
+        
+        .alliance-position h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #63b3ed, #90cdf4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .alliance-position h2 i {
+            font-size: 2rem;
+            color: #63b3ed;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .position-tier {
+            background: rgba(15, 30, 50, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(66, 153, 225, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .position-tier:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .position-tier h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            color: #63b3ed;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(66, 153, 225, 0.3);
+        }
+        
+        .position-tier h3 i {
+            color: #4299e1;
+        }
+        
+        .position-alliances {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .position-alliance {
+            background: rgba(66, 153, 225, 0.15);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .position-alliance:hover {
+            background: rgba(66, 153, 225, 0.3);
+            transform: scale(1.05);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .last-updated {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* 动画效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .tier-content {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo i {
+                font-size: 2.2rem;
+                padding: 12px;
+            }
+            
+            .position-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .alliance-position h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tier-content {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            }
+            
+            .tier-header {
+                padding: 15px;
+            }
+            
+            .tier-title {
+                font-size: 1.2rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <h1>生存圈公会实力天梯排行榜</h1>
+            </div>
+            <p class="subtitle">
+                --------------------------------------------------<br>
+                基于综合影响力评估的梯队划分，每月动态更新---@MuFeng/暮烟排榜<br>
+                --------------------------------------------------<br>
+                排榜方:生存圈频道官方/生存圈"暮烟"排榜委员会/@MuFeng<br>
+                --------------------------------------------------<br>
+                排榜人:龙腾 么炎 凌迁梦(小孩) 草履虫 孤存 文敏 归处 萝卜 太熙 半岛 地球 神封 委屈<br>
+                --------------------------------------------------<br>
+                网页开发者/公益服务提供:@MuFeng @冰心<br>
+                --------------------------------------------------<br>
+                本网站为公益页,禁止任何形式的商业,不存在任何盈利行为,请放心查询<br>
+                --------------------------------------------------<br>
+                此页面由和谐共建HCC维护
+            </p>
+            
+            <div class="controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="点击搜索公会名称...">
+                </div>
+            </div>
+        </header>
+        
+        <div class="tier-container" id="tierContainer"></div>
+        
+        <!-- 联盟位区域 -->
+        <div class="alliance-position">
+            <h2><i class="fas fa-chess-rook"></i> 生存圈联盟 · 特殊梯队</h2>
+            <div class="position-grid">
+                <!-- 联盟位内容保持不变 -->
+                <div class="position-tier">
+                    <h3><i class="fas fa-crown"></i> 特等联盟</h3>
+                    <div class="position-alliances">
+                        <div class="position-alliance">共协</div>
+                        <div class="position-alliance">SWI</div>
+                        <div class="position-alliance">第零序列</div>
+                    </div>
+                </div>
+                
+                <div class="position-tier">
+                    <h3><i class="fas fa-star"></i> 一等联盟</h3>
+                    <div class="position-alliances">
+                        <div class="position-alliance">神协</div>
+                        <div class="position-alliance">海德尔</div>
+                        <div class="position-alliance">玄天之境</div>
+                        <div class="position-alliance">江盛集团</div>
+                        <div class="position-alliance">风行天下</div>
+                        <div class="position-alliance">FPE</div>
+                        <div class="position-alliance">世尘联合</div>
+                        <div class="position-alliance">众星TYA</div>
+                        <div class="position-alliance">圣武天下</div>
+                    </div>
+                </div>
+                
+                <div class="position-tier">
+                    <h3><i class="fas fa-shield-alt"></i> 二等联盟</h3>
+                    <div class="position-alliances">
+                        <div class="position-alliance">圣鹤集团</div>
+                        <div class="position-alliance">无妄之灾</div>
+                        <div class="position-alliance">神奈川</div>
+                        <div class="position-alliance">ATS大合众</div>
+                        <div class="position-alliance">QR</div>
+                        <div class="position-alliance">鸿天源薮</div>
+                        <div class="position-alliance">神渊集团</div>
+                        <div class="position-alliance">FBD集团</div>
+                    </div>
+                </div>
+                
+                <div class="position-tier">
+                    <h3><i class="fas fa-medal"></i> 三等联盟</h3>
+                    <div class="position-alliances">
+                        <div class="position-alliance">秋氏集团</div>
+                        <div class="position-alliance">NWUA</div>
+                        <div class="position-alliance">大散关</div>
+                        <div class="position-alliance">SDCN</div>
+                    </div>
+                </div>
+                
+                <div class="position-tier">
+                    <h3><i class="fas fa-flag"></i> 四等联盟</h3>
+                    <div class="position-alliances">
+                        <div class="position-alliance">SAL</div>
+                        <div class="position-alliance">ZXY时光</div>
+                        <div class="position-alliance">星念</div>
+                        <div class="position-alliance">罗生门</div>
+                        <div class="position-alliance">联合联盟</div>
+                        <div class="position-alliance">海棠域集团</div>
+                        <div class="position-alliance">天海集团</div>
+                        <div class="position-alliance">噬星魔鸦</div>
+                        <div class="position-alliance">暴风雨联</div>
+                        <div class="position-alliance">san</div>
+                        <div class="position-alliance">万法联邦</div>
+                        <div class="position-alliance">US</div>
+                    </div>
+                </div>
+                
+                <div class="position-tier">
+                    <h3><i class="fas fa-compass"></i> 五等联盟</h3>
+                    <div class="position-alliances">
+                        <div class="position-alliance">维加斯集团</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="last-updated">
+                <i class="fas fa-sync-alt"></i>
+                <span>更新时间:2025年7月23日18:00</span>
+            </div>
+            <div class="copyright">© 2025 生存圈-暮烟-排榜数据委员会 | 数据每月更新 | 广告联系: 没有</div>
+        </footer>
+    </div>
+
+    <script>
+        // 从JSON文件加载数据并生成页面
+        document.addEventListener('DOMContentLoaded', () => {
+            // 加载JSON数据
+            fetch('pb.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('网络响应不正常');
+                    }
+                    return response.json();
+                })
+                .then(tiers => {
+                    generateTierCards(tiers);
+                    initSearch();
+                })
+                .catch(error => {
+                    console.error('加载数据时出错:', error);
+                    document.getElementById('tierContainer').innerHTML = '<p>无法加载公会数据，请稍后再试</p>';
+                });
+            
+            // 生成等级卡片
+            function generateTierCards(tiers) {
+                const container = document.getElementById('tierContainer');
+                container.innerHTML = '';
+                
+                // 定义等级与颜色的映射关系（原color字段的替代方案）
+                const tierColorMap = {
+                    "T0": "tier-45",
+                    "T0.5": "tier-05",
+                    "T1": "tier-1",
+                    "T2": "tier-2",
+                    "T2.5": "tier-25",
+                    "T3": "tier-3",
+                    "T3.5": "tier-35",
+                    "T4": "tier-4",
+                    "T5": "tier-5"
+                };
+                
+                tiers.forEach(tier => {
+                    // 根据等级获取对应的颜色类名
+                    const colorClass = tierColorMap[tier.level] || '';
+                    
+                    const tierCard = document.createElement('div');
+                    tierCard.className = `tier-card ${colorClass}`;
+                    
+                    const header = document.createElement('div');
+                    header.className = 'tier-header';
+                    header.innerHTML = `
+                        <div class="tier-badge">${tier.level}</div>
+                        <div class="tier-title">${tier.title}</div>
+                        <div class="tier-count">${tier.alliances.length}个公会</div>
+                    `;
+                    
+                    const content = document.createElement('div');
+                    content.className = 'tier-content';
+                    
+                    tier.alliances.forEach(alliance => {
+                        const allianceCard = document.createElement('div');
+                        allianceCard.className = 'alliance-card';
+                        allianceCard.innerHTML = `<div class="alliance-name">${alliance}</div>`;
+                        content.appendChild(allianceCard);
+                    });
+                    
+                    tierCard.appendChild(header);
+                    tierCard.appendChild(content);
+                    container.appendChild(tierCard);
+                });
+            }
+            
+            // 初始化搜索功能
+            function initSearch() {
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    document.querySelectorAll('.alliance-card').forEach(card => {
+                        const allianceName = card.querySelector('.alliance-name').textContent.toLowerCase();
+                        card.style.display = allianceName.includes(searchTerm) ? 'flex' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+    
