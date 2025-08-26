@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MC生存圈公会实力天梯排行榜</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c1220, #1a2436);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .logo i {
+            font-size: 2.8rem;
+            color: #f8fafc;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            padding: 15px;
+            border-radius: 50%;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #93c5fd, #c7d2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border-radius: 30px;
+            border: none;
+            background: rgba(31, 83, 167, 0.7);
+            color: #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            background: rgba(30, 41, 59, 0.9);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        
+        .tier-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .tier-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .tier-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tier-header {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tier-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            opacity: 0.15;
+        }
+        
+        .tier-badge {
+            background: white;
+            color: #0f172a;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            z-index: 2;
+        }
+        
+        .tier-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .tier-count {
+            margin-left: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 2;
+        }
+        
+        .tier-content {
+            padding: 25px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+        
+        .alliance-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .alliance-card:hover {
+            background: rgba(56, 70, 100, 0.7);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .alliance-name {
+            font-weight: 500;
+            font-size: 1.05rem;
+            word-break: break-word;
+        }
+        
+        /* Tier-specific styles */
+        .tier-45 .tier-header::before { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        .tier-45 .tier-header { background: linear-gradient(90deg, #d97706, #b45309); }
+        
+        .tier-05 .tier-header::before { background: linear-gradient(90deg, #e5e7eb, #d1d5db); }
+        .tier-05 .tier-header { background: linear-gradient(90deg, #6b7280, #4b5563); }
+        
+        .tier-1 .tier-header::before { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .tier-1 .tier-header { background: linear-gradient(90deg, #b91c1c, #991b1b); }
+        
+        .tier-2 .tier-header::before { background: linear-gradient(90deg, #f97316, #ea580c); }
+        .tier-2 .tier-header { background: linear-gradient(90deg, #c2410c, #9a3412); }
+        
+        .tier-25 .tier-header::before { background: linear-gradient(90deg, #eab308, #ca8a04); }
+        .tier-25 .tier-header { background: linear-gradient(90deg, #a16207, #854d0e); }
+        
+        .tier-3 .tier-header::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .tier-3 .tier-header { background: linear-gradient(90deg, #15803d, #166534); }
+        
+        .tier-35 .tier-header::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+        .tier-35 .tier-header { background: linear-gradient(90deg, #0e7490, #155e75); }
+        
+        .tier-4 .tier-header::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .tier-4 .tier-header { background: linear-gradient(90deg, #1d4ed8, #1e40af); }
+        
+        .tier-5 .tier-header::before { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+        .tier-5 .tier-header { background: linear-gradient(90deg, #6d28d9, #5b21b6); }
+        
+        .alliance-position {
+            background: linear-gradient(135deg, #1e3a5f, #2c5282);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(178, 24, 24, 0.3);
+            border: 2px solid rgba(8, 113, 199, 0.3);
+        }
+        
+        .alliance-position h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #63b3ed, #90cdf4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .alliance-position h2 i {
+            font-size: 2rem;
+            color: #63b3ed;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .position-tier {
+            background: rgba(15, 30, 50, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(66, 153, 225, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .position-tier:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .position-tier h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            color: #63b3ed;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(66, 153, 225, 0.3);
+        }
+        
+        .position-alliances {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .position-alliance {
+            background: rgba(66, 153, 225, 0.15);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .position-alliance:hover {
+            background: rgba(66, 153, 225, 0.3);
+            transform: scale(1.05);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .last-updated {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @media (max-width: 768px) {
+            .tier-content {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .position-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .alliance-position h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tier-content {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            }
+            
+            .tier-header {
+                padding: 15px;
+            }
+            
+            .tier-title {
+                font-size: 1.2rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <h1>生存圈公会实力天梯排行榜</h1>
+            </div>
+            <p class="subtitle">
+                --------------------------------------------------<br>
+                基于综合影响力评估的梯队划分，每月动态更新---@MuFeng/暮烟排榜<br>
+                --------------------------------------------------<br>
+                排榜方:生存圈频道官方/生存圈"暮烟"排榜委员会/@MuFeng<br>
+                --------------------------------------------------<br>
+                排榜人:龙腾 么炎 凌迁梦(小孩) 草履虫 孤存 文敏 归处 萝卜 太熙 半岛 地球 神封 委屈<br>
+                --------------------------------------------------<br>
+                网页开发者/公益服务提供:@MuFeng @冰心<br>
+                --------------------------------------------------<br>
+                本网站为公益页,禁止任何形式的商业,不存在任何盈利行为,请放心查询<br>
+                --------------------------------------------------
+            </p>
+            
+            <div class="controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="点击搜索公会名称...">
+                </div>
+            </div>
+        </header>
+        
+        <!-- 常规梯队容器（动态渲染） -->
+        <div class="tier-container" id="tierContainer">
+            <!-- 加载中提示 -->
+            <div style="text-align:center;padding:50px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i>
+                <p style="margin-top:10px;">正在加载常规梯队数据...</p>
+            </div>
+        </div>
+        
+        <!-- 特殊梯队容器（动态渲染） -->
+        <div class="alliance-position" id="specialTierContainer">
+            <!-- 加载中提示 -->
+            <div style="text-align:center;padding:50px;">
+                <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i>
+                <p style="margin-top:10px;">正在加载特殊梯队数据...</p>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="last-updated">
+                <i class="fas fa-sync-alt"></i>
+                <span>更新时间:2025年7月23日18:00</span>
+            </div>
+            <div class="copyright">© 2025 生存圈-暮烟-排榜数据委员会 | 数据每月更新 | 广告联系: 没有</div>
+        </footer>
+    </div>
+
+    <script>
+        // 全局配置：API基础路径（根据实际部署路径调整）
+        const API_BASE_URL = 'api';
+
+        // 页面加载完成后，初始化数据
+        document.addEventListener('DOMContentLoaded', () => {
+            loadNormalTiers(); // 加载常规梯队
+            loadSpecialTiers(); // 加载特殊梯队
+            initSearch(); // 初始化搜索功能
+        });
+
+        /**
+         * 加载常规梯队数据（请求 get-tiers.php）
+         */
+        async function loadNormalTiers() {
+            const container = document.getElementById('tierContainer');
+            try {
+                // 发送GET请求
+                const response = await fetch(`${API_BASE_URL}/get-tiers.php`);
+                const resData = await response.json();
+
+                // 处理响应
+                if (resData.code !== 200) {
+                    container.innerHTML = `<p style="text-align:center;color:#ef4444;padding:50px;">${resData.msg}</p>`;
+                    return;
+                }
+
+                // 动态生成常规梯队HTML
+                const tiers = resData.data;
+                let html = '';
+                tiers.forEach(tier => {
+                    html += `
+                        <div class="tier-card ${tier.color}">
+                            <div class="tier-header">
+                                <div class="tier-badge">${tier.level}</div>
+                                <div class="tier-title">${tier.title}</div>
+                                <div class="tier-count">${tier.alliances.length}个公会</div>
+                            </div>
+                            <div class="tier-content">
+                    `;
+                    // 生成公会卡片
+                    tier.alliances.forEach(alliance => {
+                        html += `
+                            <div class="alliance-card">
+                                <div class="alliance-name">${alliance}</div>
+                            </div>
+                        `;
+                    });
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+            } catch (error) {
+                container.innerHTML = `<p style="text-align:center;color:#ef4444;padding:50px;">常规梯队加载失败：${error.message}</p>`;
+            }
+        }
+
+        /**
+         * 加载特殊梯队数据（请求 get-special-tiers.php）
+         */
+        async function loadSpecialTiers() {
+            const container = document.getElementById('specialTierContainer');
+            try {
+                const response = await fetch(`${API_BASE_URL}/get-special-tiers.php`);
+                const resData = await response.json();
+
+                if (resData.code !== 200) {
+                    container.innerHTML = `<p style="text-align:center;color:#ef4444;padding:50px;">${resData.msg}</p>`;
+                    return;
+                }
+
+                // 动态生成特殊梯队HTML
+                const specialTiers = resData.data;
+                let html = `
+                    <h2><i class="fas fa-chess-rook"></i> 生存圈联盟 · 特殊梯队</h2>
+                    <div class="position-grid">
+                `;
+                specialTiers.forEach(tier => {
+                    html += `
+                        <div class="position-tier">
+                            <h3><i class="${tier.icon}"></i> ${tier.title}</h3>
+                            <div class="position-alliances">
+                    `;
+                    tier.alliances.forEach(alliance => {
+                        html += `<div class="position-alliance">${alliance}</div>`;
+                    });
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+                container.innerHTML = html;
+
+            } catch (error) {
+                container.innerHTML = `<p style="text-align:center;color:#ef4444;padding:50px;">特殊梯队加载失败：${error.message}</p>`;
+            }
+        }
+
+        /**
+         * 初始化搜索功能（请求 search-alliance.php）
+         */
+        function initSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const normalTierContainer = document.getElementById('tierContainer');
+            const specialTierContainer = document.getElementById('specialTierContainer');
+
+            // 监听输入事件（防抖：输入停止300ms后再请求）
+            let debounceTimer;
+            searchInput.addEventListener('input', (e) => {
+                const keyword = e.target.value.trim();
+                
+                // 清空关键词：重新加载原始数据
+                if (!keyword) {
+                    loadNormalTiers();
+                    loadSpecialTiers();
+                    return;
+                }
+
+                // 防抖处理
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(async () => {
+                    try {
+                        // 发送搜索请求（带关键词参数）
+                        const response = await fetch(`${API_BASE_URL}/search-alliance.php?keyword=${encodeURIComponent(keyword)}`);
+                        const resData = await response.json();
+
+                        if (resData.code !== 200) {
+                            alert(resData.msg);
+                            return;
+                        }
+
+                        const { normal, special } = resData.data;
+
+                        // 渲染常规公会搜索结果
+                        let normalHtml = `<h3 style="text-align:center;margin-bottom:20px;">常规公会搜索结果（${normal.length}条）</h3>`;
+                        if (normal.length === 0) {
+                            normalHtml += `<p style="text-align:center;padding:50px;">未找到匹配的常规公会</p>`;
+                        } else {
+                            // 按梯队分组显示
+                            const tierGroup = {};
+                            normal.forEach(item => {
+                                const tierKey = `${item.tier_level}-${item.tier_title}`;
+                                if (!tierGroup[tierKey]) {
+                                    tierGroup[tierKey] = {
+                                        level: item.tier_level,
+                                        title: item.tier_title,
+                                        alliances: []
+                                    };
+                                }
+                                tierGroup[tierKey].alliances.push(item.alliance_name);
+                            });
+                            // 生成HTML
+                            Object.values(tierGroup).forEach(tier => {
+                                normalHtml += `
+                                    <div class="tier-card">
+                                        <div class="tier-header" style="background:linear-gradient(90deg,#1e40af,#1d4ed8);">
+                                            <div class="tier-badge">${tier.level}</div>
+                                            <div class="tier-title">${tier.title}</div>
+                                            <div class="tier-count">${tier.alliances.length}个公会</div>
+                                        </div>
+                                        <div class="tier-content">
+                                `;
+                                tier.alliances.forEach(alliance => {
+                                    normalHtml += `
+                                        <div class="alliance-card">
+                                            <div class="alliance-name">${alliance}</div>
+                                        </div>
+                                    `;
+                                });
+                                normalHtml += `</div></div>`;
+                            });
+                        }
+                        normalTierContainer.innerHTML = normalHtml;
+
+                        // 渲染特殊联盟搜索结果
+                        let specialHtml = `
+                            <h2><i class="fas fa-chess-rook"></i> 特殊联盟搜索结果（${special.length}条）</h2>
+                            <div class="position-grid">
+                        `;
+                        if (special.length === 0) {
+                            specialHtml += `<p style="text-align:center;padding:50px;">未找到匹配的特殊联盟</p>`;
+                        } else {
+                            // 按特殊梯队分组
+                            const tierGroup = {};
+                            special.forEach(item => {
+                                if (!tierGroup[item.tier_title]) {
+                                    tierGroup[item.tier_title] = {
+                                        title: item.tier_title,
+                                        alliances: []
+                                    };
+                                }
+                                tierGroup[item.tier_title].alliances.push(item.alliance_name);
+                            });
+                            // 生成HTML
+                            Object.values(tierGroup).forEach(tier => {
+                                specialHtml += `
+                                    <div class="position-tier">
+                                        <h3><i class="fas fa-star"></i> ${tier.title}</h3>
+                                        <div class="position-alliances">
+                                `;
+                                tier.alliances.forEach(alliance => {
+                                    specialHtml += `<div class="position-alliance">${alliance}</div>`;
+                                });
+                                specialHtml += `</div></div>`;
+                            });
+                        }
+                        specialHtml += `</div>`;
+                        specialTierContainer.innerHTML = specialHtml;
+
+                    } catch (error) {
+                        alert(`搜索失败：${error.message}`);
+                    }
+                }, 300);
+            });
+        }
+    </script>
+</body>
+</html>
